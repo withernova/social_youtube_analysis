@@ -16,11 +16,11 @@ def save_nodes_to_csv(nodes, output_file):
         for node in nodes:
             writer.writerow([node])
 
-# 加载图
+#加载图
 file_path = "facebook_combined.txt/facebook_combined.txt"
 facebook_combined_graph = nx.read_edgelist(file_path, nodetype=int)
 
-# 从图中抽取 5000 个结点
+#从图中抽取 5000 个结点
 sample_size = 5000
 sampled_nodes = monte_carlo_sample(facebook_combined_graph, sample_size)
 

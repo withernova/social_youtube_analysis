@@ -6,7 +6,7 @@ def load_combined_facebook_data(file_path):
     print(f"Loaded combined graph with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges")
     return G
 
-def analyze_and_visualize_graph(graph):
+def analyze_visualize(graph):
     print(f"Number of nodes: {graph.number_of_nodes()}")
     print(f"Number of edges: {graph.number_of_edges()}")
     
@@ -33,4 +33,4 @@ def analyze_and_visualize_graph(graph):
 
 file_path = "facebook_combined.txt/facebook_combined.txt"
 facebook_combined_graph = load_combined_facebook_data(file_path)
-analyze_and_visualize_graph(facebook_combined_graph)
+analyze_visualize(facebook_combined_graph)
