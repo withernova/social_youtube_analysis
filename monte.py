@@ -1,43 +1,30 @@
-import numpy as np
+import networkx as nx
+import random
+import csv
 
-# 参数设置
-N = 1000  # 用户总数
-a = 1.5   # 齐普夫分布参数，控制陡峭程度
+def monte_carlo_sample(graph, sample_size):
+    if sample_size > graph.number_of_nodes():
+        raise ValueError("Sample size cannot be larger than the number of nodes in the graph.")
+    
+    sampled_nodes = random.sample(graph.nodes(), sample_size)
+    return sampled_nodes
 
-# 生成齐普夫分布
-user_ranks = np.arange(1, N + 1)  # 用户排名 1 到 N
-zipf_probs = 1 / (user_ranks ** a)  # 齐普夫公式
-zipf_probs /= zipf_probs.sum()  # 归一化为概率分布
+def save_nodes_to_csv(nodes, output_file):
+    with open(output_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Node"])
+        for node in nodes:
+            writer.writerow([node])
 
-# 输出部分用户的概率
-print("前10名用户的发起概率:", zipf_probs[:10])
-print("后10名用户的发起概率:", zipf_probs[-10:])
+# 加载图
+file_path = "facebook_combined.txt/facebook_combined.txt"
+facebook_combined_graph = nx.read_edgelist(file_path, nodetype=int)
 
-# 蒙特卡洛模拟
-num_simulations = 1000  # 模拟次数
-user_initiate_counts = np.zeros(N)  # 每个用户发起行为的计数
+# 从图中抽取 5000 个结点
+sample_size = 5000
+sampled_nodes = monte_carlo_sample(facebook_combined_graph, sample_size)
 
-for _ in range(num_simulations):
-    for i in range(N):
-        if np.random.random() < zipf_probs[i]:  # 根据概率判断是否发起
-            user_initiate_counts[i] += 1
+output_file = "sampled_nodes.csv"
+save_nodes_to_csv(sampled_nodes, output_file)
 
-# 发起概率的归一化处理
-user_initiate_probs = user_initiate_counts / num_simulations
-
-# 输出结果
-print("前10名用户的发起概率:", user_initiate_probs[:10])
-print("后10名用户的发起概率:", user_initiate_probs[-10:])
-
-
-import matplotlib.pyplot as plt
-
-# 绘制用户发起概率分布
-plt.figure(figsize=(10, 6))
-plt.plot(user_ranks, user_initiate_probs, label='User Initiation Probability', color='blue')
-plt.xlabel('User Rank')
-plt.ylabel('Probability')
-plt.title('User Initiation Probability by Rank (Zipf Distribution)')
-plt.grid()
-plt.legend()
-plt.show()
+print(f"Sampled {sample_size} nodes and saved to {output_file}")
